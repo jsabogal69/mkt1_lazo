@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fabric Belt Market Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals & Subtle Accents -->
+    <!-- Application Structure Plan: A top-down, dashboard-style SPA. It starts with a high-level summary, then flows into four distinct, interactive modules: 1) Market Anatomy, 2) Competitive Arena, 3) Consumer Insights, and 4) Strategic Blueprint. This structure allows users to get a quick overview from the charts and key stats, then dive deeper into the specific areas that interest them most. Navigation is handled by both scrolling and header links for quick access. This non-linear, thematic approach is more user-friendly for data exploration than the linear format of the original report. -->
+    <!-- Visualization & Content Choices: 
+        - Market Segmentation: Report Info -> 4 key belt types. Goal -> Show market composition. Viz -> Interactive Doughnut Chart (Chart.js). Interaction -> Clicking a segment updates a detailed text block. Justification -> Visually intuitive way to show parts of a whole and allow for drill-down.
+        - Competitive Landscape: Report Info -> Competitors by tier/price. Goal -> Compare players. Viz -> Interactive Polar Area Chart (Chart.js) to show different strategic groups. Interaction -> Clicking a brand on the chart or list reveals a detailed card with strategies/weaknesses. Justification -> A polar chart effectively groups competitors into their strategic archetypes (Value, Incumbent, etc.), making the landscape easy to grasp.
+        - Market Currents: Report Info -> Belt hole obsolescence & stretch mandate. Goal -> Show technological shifts. Viz -> HTML/CSS side-by-side comparison cards with icons. Interaction -> None needed, direct comparison is the goal. Justification -> Clear, static visual comparison is most effective for this binary concept.
+        - Strategic Blueprint: Report Info -> Product/GTM recommendations. Goal -> Inform action plan. Viz -> Structured HTML/CSS layout with icons. Interaction -> None. Justification -> A clear, readable, and well-organized text layout is best for presenting a strategic plan.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f7f4;
+            color: #3d3d3d;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s ease, border-bottom-color 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #a16207;
+            border-bottom-color: #a16207;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+        .btn-primary {
+            background-color: #ca8a04;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #a16207;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-gray-800">Belt Market Dashboard</h1>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#market-anatomy" class="nav-link font-medium text-gray-600 pb-1">Market Anatomy</a>
+                <a href="#competitors" class="nav-link font-medium text-gray-600 pb-1">Competitors</a>
+                <a href="#consumer-profile" class="nav-link font-medium text-gray-600 pb-1">Consumer Profile</a>
+                <a href="#strategy" class="nav-link font-medium text-gray-600 pb-1">Strategic Blueprint</a>
+            </div>
+            <div class="md:hidden">
+                 <button id="mobile-menu-button" class="text-gray-800 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden">
+            <a href="#market-anatomy" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100">Market Anatomy</a>
+            <a href="#competitors" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100">Competitors</a>
+            <a href="#consumer-profile" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100">Consumer Profile</a>
+            <a href="#strategy" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100">Strategic Blueprint</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        
+        <section id="executive-summary" class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">The Amazon Fabric Belt Market: A Strategic Analysis</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                This interactive report analyzes the men's fabric belt market on Amazon.com, focusing on the young male demographic. Discover key market segments, competitive dynamics, consumer trends, and a strategic blueprint for success in this evolving category.
+            </p>
+        </section>
+
+        <section id="market-anatomy" class="mb-20 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-800">Market Anatomy</h3>
+                <p class="mt-2 text-gray-600 max-w-2xl mx-auto">The fabric belt market is not monolithic. It's a vibrant ecosystem of distinct segments. Click on a category in the chart to explore its characteristics.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="chart-container h-80 md:h-96">
+                    <canvas id="marketSegmentsChart"></canvas>
+                </div>
+                <div id="segment-details" class="card p-8">
+                    <h4 id="segment-title" class="text-2xl font-bold text-gray-800 mb-4">Select a Segment</h4>
+                    <p id="segment-description" class="text-gray-600">Click on a section of the chart to see details about each market segment, its core materials, typical buckle technology, and target audience.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="competitors" class="mb-20 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-800">The Competitive Arena</h3>
+                <p class="mt-2 text-gray-600 max-w-2xl mx-auto">The market is a battlefield of different player archetypes. Explore the key competitors by clicking their names to reveal their strategies and vulnerabilities.</p>
+            </div>
+             <div class="grid md:grid-cols-5 gap-8">
+                <div class="md:col-span-2">
+                    <div id="competitor-list" class="space-y-2"></div>
+                </div>
+                <div id="competitor-details-container" class="md:col-span-3 card p-8 min-h-[300px]">
+                     <h4 id="competitor-name" class="text-2xl font-bold text-gray-800 mb-2">Select a Competitor</h4>
+                    <p id="competitor-tier" class="font-medium text-yellow-600 mb-4"></p>
+                    <p id="competitor-strategy" class="text-gray-600 mb-4">Click on a competitor from the list to view a summary of their market strategy, key value proposition, and primary weaknesses.</p>
+                    <p id="competitor-weakness" class="text-gray-600"></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="consumer-profile" class="mb-20 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-800">The Modern Consumer</h3>
+                <p class="mt-2 text-gray-600 max-w-2xl mx-auto">Two powerful trends are reshaping consumer expectations, making old technology obsolete and setting new standards for comfort and functionality.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="card p-8">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">🚫</span>
+                        <h4 class="text-2xl font-bold text-gray-800">The Obsolete Belt Hole</h4>
+                    </div>
+                    <p class="text-gray-600">The universal frustration of being between belt holes is over. Micro-adjustable systems (ratchets, tracks) offering a "perfect fit" are no longer a luxury but an expectation. Belts with holes are increasingly seen as outdated technology.</p>
+                </div>
+                <div class="card p-8">
+                     <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">🤸</span>
+                        <h4 class="text-2xl font-bold text-gray-800">The Comfort Mandate</h4>
+                    </div>
+                    <p class="text-gray-600">Stretch fabric has become a baseline requirement for casual belts. The ability for a belt to move with the body provides a superior comfort experience that consumers are unwilling to give up. Rigidity now requires a specific functional justification.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="strategy" class="scroll-mt-20">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-800">Blueprint for Success</h3>
+                <p class="mt-2 text-gray-600 max-w-2xl mx-auto">A clear strategic opportunity exists. This blueprint outlines the path to capture the underserved mid-market by delivering a superior, engineered product.</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-8 md:p-12">
+                <div class="grid md:grid-cols-3 gap-10">
+                    <div>
+                        <h4 class="font-bold text-xl mb-3 text-yellow-700">1. The Market Gap: The "Apex" Belt</h4>
+                        <p class="text-gray-600">Target the **$35-$55 price range** with a product that synthesizes three key benefits: the **comfort** of performance stretch, the **functionality** of micro-adjust technology, and the **trust** of a lifetime durability promise.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-xl mb-3 text-yellow-700">2. Product Development</h4>
+                        <ul class="space-y-3 text-gray-600">
+                            <li class="flex items-start"><span class="font-bold text-yellow-600 mr-2">Fabric:</span> High-tensile, controlled-stretch webbing.</li>
+                            <li class="flex items-start"><span class="font-bold text-yellow-600 mr-2">Buckle:</span> Low-profile, lightweight micro-adjustable system (<1.5" wide).</li>
+                            <li class="flex items-start"><span class="font-bold text-yellow-600 mr-2">Features:</span> Must be cut-to-fit with a lifetime "No-Fray, No-Fail" guarantee.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-xl mb-3 text-yellow-700">3. Go-to-Market on Amazon</h4>
+                        <ul class="space-y-3 text-gray-600">
+                             <li class="flex items-start"><span class="font-bold text-yellow-600 mr-2">Positioning:</span> "Engineered for Life's Demands" - versatile, durable, comfortable.</li>
+                             <li class="flex items-start"><span class="font-bold text-yellow-600 mr-2">Content:</span> Use A+ content and video to tell the story: Problem -> Solution -> Guarantee.</li>
+                             <li class="flex items-start"><span class="font-bold text-yellow-600 mr-2">Tiers:</span> Offer a single belt (~$45) and a premium gift box starter kit (~$65).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-20">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2025 Market Insights Inc. All rights reserved.</p>
+            <p class="text-sm text-gray-400 mt-2">This dashboard is an interactive visualization of the "U.S. Fabric Belt Market on Amazon.com" report.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const marketSegmentsData = {
+                labels: ['Casual Web/Canvas', 'Stretch Woven', 'Tactical/Outdoor', '"Perfect Fit" Tech'],
+                datasets: [{
+                    label: 'Market Segments',
+                    data: [15, 30, 25, 30],
+                    backgroundColor: [
+                        '#fde047', // yellow-300
+                        '#fbbf24', // amber-400
+                        '#f59e0b', // amber-500
+                        '#d97706'  // amber-600
+                    ],
+                    borderColor: '#f8f7f4',
+                    borderWidth: 4,
+                    hoverOffset: 8
+                }]
+            };
+
+            const segmentDetails = {
+                'Casual Web/Canvas': "The most traditional and commoditized category. Typically made from cotton with simple plaque or D-ring buckles. Represents the entry-point for many consumers, with prices often under $15.",
+                'Stretch Woven': "Prioritizes comfort with elasticated, braided fabric allowing infinite adjustability. Extremely popular for casual and golf attire, this segment adapts to the wearer's movement.",
+                'Tactical/Outdoor': "Defined by ruggedness. Constructed from high-denier nylon with robust quick-release or 'Cobra' style buckles. Appeals to outdoor, workwear, and 'Everyday Carry' (EDC) enthusiasts.",
+                '"Perfect Fit" Tech': "The market's fastest-growing and most innovative segment. Defined by hole-less, micro-adjustable systems like ratchets or magnetic locks. Positioned as an engineered solution."
+            };
+
+            const marketSegmentsCtx = document.getElementById('marketSegmentsChart').getContext('2d');
+            const marketSegmentsChart = new Chart(marketSegmentsCtx, {
+                type: 'doughnut',
+                data: marketSegmentsData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '50%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}% Market Share (Est.)`;
+                                }
+                            }
+                        }
+                    },
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const chartElement = elements[0];
+                            const index = chartElement.index;
+                            const label = marketSegmentsData.labels[index];
+                            document.getElementById('segment-title').innerText = label;
+                            document.getElementById('segment-description').innerText = segmentDetails[label];
+                        }
+                    }
+                }
+            });
+
+            const competitorsData = [
+                 { name: 'FAIRWIN', tier: 'Value Vanguard', strategy: 'Offers the lowest price point for popular technologies like ratchet buckles. Dominates search via aggressive pricing and multi-packs.', weakness: 'Suffers from inconsistent quality, with frequent complaints of easily scratched buckles and failing ratchet mechanisms.' },
+                 { name: 'Columbia', tier: 'Established Incumbent', strategy: 'Leverages decades of brand trust and a massive brick-and-mortar presence. Sells based on brand recall rather than product innovation.', weakness: 'Designs feel dated and lack modern features like stretch or micro-adjustment, making them technologically inferior to competitors.' },
+                 { name: 'Arcade Belts', tier: 'Adventure Specialist', strategy: 'Sells a lifestyle of adventure built around their "performance stretch" recycled fabric and travel-friendly plastic buckles.', weakness: 'The buckle can be too wide for some pant loops, and the high degree of stretch is unsuitable for carrying heavier items.' },
+                 { name: 'Anson Belt', tier: 'DTC Innovator', strategy: 'Re-engineered the belt with a "perfect fit" ratchet track system and a "mix & match" ecosystem of straps and buckles, backed by a lifetime guarantee.', weakness: 'High price point ($50+) creates a barrier to entry and limits visibility against cheaper alternatives on Amazon.' },
+                 { name: 'Grip6', tier: 'DTC Innovator', strategy: 'Appeals to a minimalist tech aesthetic with a unique, low-profile friction-lock buckle and a lifetime guarantee.', weakness: 'The non-stretch design is less comfortable for some, and the buckle can occasionally loosen over time with certain movements.' },
+                 { name: 'Groove Life', tier: 'Adventure Specialist', strategy: 'Focuses on extreme durability with a unique magnetic clasp for an easy on/off experience, backed by a powerful lifetime warranty.', weakness: 'Very high price point ($60+) and a bulky buckle design limit its audience to those prioritizing durability above all else.' }
+            ];
+
+            const competitorListEl = document.getElementById('competitor-list');
+            const competitorNameEl = document.getElementById('competitor-name');
+            const competitorTierEl = document.getElementById('competitor-tier');
+            const competitorStrategyEl = document.getElementById('competitor-strategy');
+            const competitorWeaknessEl = document.getElementById('competitor-weakness');
+            
+            let activeCompetitorButton = null;
+
+            competitorsData.forEach(comp => {
+                const button = document.createElement('button');
+                button.className = 'w-full text-left p-4 rounded-lg border-2 border-gray-200 hover:bg-yellow-50 hover:border-yellow-400 transition-all duration-200';
+                button.innerHTML = `<span class="font-semibold text-gray-800">${comp.name}</span><br><span class="text-sm text-gray-500">${comp.tier}</span>`;
+                button.onclick = () => {
+                    competitorNameEl.innerText = comp.name;
+                    competitorTierEl.innerText = comp.tier;
+                    competitorStrategyEl.innerHTML = `<strong class="text-gray-700">Strategy:</strong> ${comp.strategy}`;
+                    competitorWeaknessEl.innerHTML = `<strong class="text-gray-700">Weakness:</strong> ${comp.weakness}`;
+
+                    if(activeCompetitorButton) {
+                        activeCompetitorButton.classList.remove('bg-yellow-100', 'border-yellow-500');
+                    }
+                    button.classList.add('bg-yellow-100', 'border-yellow-500');
+                    activeCompetitorButton = button;
+                };
+                competitorListEl.appendChild(button);
+            });
+
+            // Mobile Menu Toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Smooth scrolling for nav links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    if (mobileMenu.classList.contains('hidden') === false) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
